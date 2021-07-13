@@ -20,33 +20,14 @@ const useStyles = makeStyles((theme) => ({
   root: {
     height: '100vh'
   },
+
+  // ---------- side image -----------
   image: {
     background: `url(${bgImage})`, 
     //'linear-gradient(to bottom,rgba(58, 141, 255, 0.85), rgba(134, 185, 255, 0.85)'
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
     backgroundPosition: 'center'
-  },
-  gradient: {
-
-  },
-  paper: {
-    margin: theme.spacing(8, 4),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  account: {
-    color: '#949494'
-  },
-  accountButton: {
-    marginLeft: theme.spacing(4),
-    backgroundColor: '#FFFFFF',
-    color: '#3A8DFF',
-    paddingLeft: theme.spacing(4),
-    paddingRight: theme.spacing(4),
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2)
   },
   sideContent: {
     marginTop: theme.spacing(4),
@@ -60,6 +41,27 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     marginTop: theme.spacing(4)
   },
+  paper: {
+    margin: theme.spacing(8, 4),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+
+  // ---------- have an account -----------
+  account: {
+    color: '#949494'
+  },
+  accountButton: {
+    marginLeft: theme.spacing(4),
+    backgroundColor: '#FFFFFF',
+    color: '#3A8DFF',
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(4),
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2)
+  },
+  // ---------- login form -----------
   content: {
     marginTop: theme.spacing(12)
   },
