@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundSize: 'cover',
     backgroundPosition: 'center'
   },
+  gradient: {
+
+  },
   paper: {
     margin: theme.spacing(8, 4),
     display: 'flex',
