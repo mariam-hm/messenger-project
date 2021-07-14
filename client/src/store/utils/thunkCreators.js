@@ -7,6 +7,7 @@ import {
   setSearchedUsers,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
+import moment from 'moment';
 
 axios.interceptors.request.use(async function (config) {
   const token = await localStorage.getItem("messenger-token");
@@ -72,7 +73,12 @@ export const logout = (id) => async (dispatch) => {
 export const fetchConversations = () => async (dispatch) => {
   try {
     const { data } = await axios.get("/api/conversations");
-    // Here order messages by date
+
+    // Order messages by date
+    for (let i = 0; i < data.length; i++) {
+      data[i].messages.sort((a, b) => { return moment(a.createdAt).diff(b.createdAt); });  
+    }
+
     dispatch(gotConversations(data));
   } catch (error) {
     console.error(error);
@@ -81,7 +87,6 @@ export const fetchConversations = () => async (dispatch) => {
 
 const saveMessage = async (body) => {
   const { data } = await axios.post("/api/messages", body);
-  console.log('saveMessage data: ', data);
   return data;
 };
 
