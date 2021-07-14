@@ -28,9 +28,6 @@ class Home extends Component {
         isLoggedIn: true,
       });
     }
-    // I think I have to update conversations here
-    // Is it the smartest way to code this ??
-    this.props.fetchConversations();
   }
 
   componentDidMount() {

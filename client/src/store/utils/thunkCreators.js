@@ -72,6 +72,7 @@ export const logout = (id) => async (dispatch) => {
 export const fetchConversations = () => async (dispatch) => {
   try {
     const { data } = await axios.get("/api/conversations");
+    // Here order messages by date
     dispatch(gotConversations(data));
   } catch (error) {
     console.error(error);
@@ -80,6 +81,7 @@ export const fetchConversations = () => async (dispatch) => {
 
 const saveMessage = async (body) => {
   const { data } = await axios.post("/api/messages", body);
+  console.log('saveMessage data: ', data);
   return data;
 };
 
@@ -95,15 +97,19 @@ const sendMessage = (data, body) => {
 // conversationId will be set to null if its a brand new conversation
 export const postMessage = (body) => (dispatch) => {
   try {
-    const data = saveMessage(body);
 
-    if (!body.conversationId) {
-      dispatch(addConversation(body.recipientId, data.message));
-    } else {
-      dispatch(setNewMessage(data.message));
-    }
+    saveMessage(body).then((response) => {
+      const data = response;
 
-    sendMessage(data, body);
+      if (!body.conversationId) {
+        dispatch(addConversation(body.recipientId, data.message));
+      } else {
+        dispatch(setNewMessage(data.message));
+      }
+
+      sendMessage(data, body);
+      })
+
   } catch (error) {
     console.error(error);
   }
