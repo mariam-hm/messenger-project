@@ -22,11 +22,15 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'row',
     alignItems: 'center',
-    backgroundColor: "grey",
+    backgroundColor: "#F4F6FA",
     borderRadius: 8,
     marginTop: 20,
     marginBottom: 20,
     padding: 5
+  },
+  textField: {
+    color: "#91A3C0",
+    margin: '5px'
   },
   invisible: {
     display: 'none'
@@ -40,6 +44,7 @@ const styles = {
 };
 
 class Input extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -58,6 +63,7 @@ class Input extends Component {
     event.preventDefault();
     // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
     if (event.target.text.value !== '' && !(/^\s+$/.test(event.target.text.value))) {
+      console.log('====== SUBMITTING ======')
       const reqBody = {
         ...this.state,
         text: event.target.text.value,
@@ -68,26 +74,44 @@ class Input extends Component {
       await this.props.postMessage(reqBody);
       this.setState({
         text: "",
+        picturesURL: []
       });
     }
   };
 
   handleUploadPic = (e) => {
-    const files = e.target.files
-    const imagesArray = [];
 
-    for (const file of files) {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
+    // Is there a better place to store those values ?
+    const CLOUD_NAME = 'dlqq70r7u';
+    const API_ENDPOINT_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`;
+    const UNSIGNED_UPLOAD_PRESET = 'f70isleq';
 
-      reader.onloadend = () => {
-        imagesArray.push(reader.result)
-        this.setState({
-          ...this.state,
-          picturesURL: [...this.state.picturesURL, reader.result]
-        })
+    for (const file of e.target.files) {
+
+      const xhr = new XMLHttpRequest();
+      var formData = new FormData();
+
+      xhr.open('POST', API_ENDPOINT_URL, true);
+      xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          var response = JSON.parse(xhr.responseText);
+
+          this.setState({
+            ...this.state,
+            picturesURL: [...this.state.picturesURL, response.secure_url]
+          })
+        }
       }
+
+      formData.append("upload_preset", UNSIGNED_UPLOAD_PRESET)
+      formData.append("file", file)
+
+      xhr.send(formData);
     }
+
+    
   }
 
   handleDeletePic = (url) => {
@@ -120,6 +144,7 @@ class Input extends Component {
 
     return (
       <form className={classes.root} onSubmit={this.handleSubmit}>
+
         <Box container item className={classes.input} >
           <Box flexGrow={1}>
 
@@ -129,10 +154,15 @@ class Input extends Component {
 
             <FormControl fullWidth hiddenLabel>
               <TextField
+                border={0}
                 placeholder="Type something..."
                 value={this.state.text}
                 name="text"
                 onChange={this.handleChange}
+                InputProps={{
+                  disableUnderline: true,
+                  className: classes.textField
+                }}
               />
             </FormControl>
           </Box>

@@ -24,16 +24,41 @@ const useStyles = makeStyles(() => ({
   bubble: {
     background: "#F4F6FA",
     borderRadius: "10px 10px 0 10px"
+  },
+  imagesContainer: {
+    display: "flex",
+    flexDirection: "column"
+  },
+  image: {
+    maxHeight: '250px',
+    maxWidth: '250px',
+    margin: '2px',
+    borderRadius: '10px'
   }
 }));
 
 const SenderBubble = (props) => {
   const classes = useStyles();
   const { time, text } = props;
+  // TEST PICTURES FOR SENDING PICTURES FEATURE
+  const picturesURLs = []
+  //const picturesURLs = ['https://res.cloudinary.com/dlqq70r7u/image/upload/v1626357846/ghenjhklxq3y4pwdnqdj.jpg', 'https://res.cloudinary.com/dlqq70r7u/image/upload/v1626357712/ekjfxathixihysdcsvx0.jpg']
+
+  const pictures = picturesURLs.length ? (
+    picturesURLs.map((picURL) => {
+      return (
+        <img key={picURL} src={picURL} className={classes.image} alt='attachment'/>
+      )
+    })
+  ) : (null) 
+
   return (
     <Box className={classes.root}>
       <Typography className={classes.date}>{time}</Typography>
       <Box className={classes.bubble}>
+        <Box className={classes.imagesContainer}>
+          {pictures}
+        </Box>
         <Typography className={classes.text}>{text}</Typography>
       </Box>
     </Box>
