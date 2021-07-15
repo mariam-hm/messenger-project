@@ -67,9 +67,10 @@ class Input extends Component {
   };
 
   handleSubmit = async (event) => {
+    console.log('TEXT IN OBJECT: ', event.target.text.value);
     event.preventDefault();
     // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
-    if (event.target.text.value !== '' && !(/^\s+$/.test(event.target.text.value))) {
+    if (!((event.target.text.value === '' || /^\s+$/.test(event.target.text.value)) && this.state.picturesURL.length == 0)) {
       const reqBody = {
         ...this.state,
         text: event.target.text.value,
@@ -132,7 +133,8 @@ class Input extends Component {
 
   handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      this.buttonRef.click()
+      e.preventDefault();
+      this.buttonRef.click();
     }
   }
 
