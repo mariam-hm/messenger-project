@@ -47,7 +47,7 @@ const ChatContent = (props) => {
           {otherUser.username}
         </Typography>
         <Typography className={classes.previewText}>
-          {latestMessageText}
+          {latestMessageText.length > 50 ? (latestMessageText.slice(0, 50) + '...') : (latestMessageText)}
         </Typography>
       </Box>
     </Box>

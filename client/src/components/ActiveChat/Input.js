@@ -47,6 +47,12 @@ class Input extends Component {
 
   constructor(props) {
     super(props);
+
+    this.buttonRef = null;
+    this.setButtonRef = element => {
+      this.buttonRef = element;
+    }
+
     this.state = {
       text: "",
       picturesURL: []
@@ -55,7 +61,8 @@ class Input extends Component {
 
   handleChange = (event) => {
     this.setState({
-      text: event.target.value,
+      ...this.state,
+      text: event.target.value
     });
   };
 
@@ -63,7 +70,6 @@ class Input extends Component {
     event.preventDefault();
     // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
     if (event.target.text.value !== '' && !(/^\s+$/.test(event.target.text.value))) {
-      console.log('====== SUBMITTING ======')
       const reqBody = {
         ...this.state,
         text: event.target.text.value,
@@ -124,6 +130,12 @@ class Input extends Component {
     })
   }
 
+  handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      this.buttonRef.click()
+    }
+  }
+
 
   render() {
     const { classes } = this.props;
@@ -143,7 +155,7 @@ class Input extends Component {
     }
 
     return (
-      <form className={classes.root} onSubmit={this.handleSubmit}>
+      <form className={classes.root} onSubmit={this.handleSubmit}  >
 
         <Box container item className={classes.input} >
           <Box flexGrow={1}>
@@ -158,7 +170,10 @@ class Input extends Component {
                 placeholder="Type something..."
                 value={this.state.text}
                 name="text"
+                multiline
                 onChange={this.handleChange}
+                onKeyPress={this.handleKeyPress}
+                
                 InputProps={{
                   disableUnderline: true,
                   className: classes.textField
@@ -175,6 +190,8 @@ class Input extends Component {
                 </IconButton>
               </label>
           </Box>
+
+          <button type="submit" ref={this.setButtonRef} className={classes.invisible} ></button>
 
         </Box>
       </form>
