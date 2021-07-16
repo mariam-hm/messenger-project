@@ -11,9 +11,8 @@ import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { postMessage } from "../../store/utils/thunkCreators";
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
-import axios from "axios";
 
-const styles = {
+const styles = (theme) => ({
   root: {
     justifySelf: "flex-end",
     marginTop: 15,
@@ -23,15 +22,15 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'row',
     alignItems: 'center',
-    backgroundColor: "#F4F6FA",
+    backgroundColor: theme.palette.secondary.light,
     borderRadius: 8,
     marginTop: 20,
     marginBottom: 20,
     padding: 5
   },
   textField: {
-    color: "#91A3C0",
-    margin: '5px'
+    color: theme.palette.secondary.dark,
+    margin: theme.spacing(1)
   },
   invisible: {
     display: 'none'
@@ -42,7 +41,7 @@ const styles = {
     justifyContent: 'row',
     alignItems: 'center'
   }
-};
+});
 
 class Input extends Component {
 
@@ -187,4 +186,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles)(Input));
+)(withStyles(styles, { withTheme: true })(Input));
