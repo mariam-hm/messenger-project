@@ -11,6 +11,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { postMessage } from "../../store/utils/thunkCreators";
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import axios from "axios";
 
 const styles = {
   root: {
@@ -63,7 +64,6 @@ class Input extends Component {
     event.preventDefault();
     // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
     if (event.target.text.value !== '' && !(/^\s+$/.test(event.target.text.value))) {
-      console.log('====== SUBMITTING ======')
       const reqBody = {
         ...this.state,
         text: event.target.text.value,
@@ -83,30 +83,22 @@ class Input extends Component {
 
     for (const file of e.target.files) {
 
-      const xhr = new XMLHttpRequest();
-      var formData = new FormData();
-
-      xhr.open('POST', process.env.REACT_APP_API_ENDPOINT_URL, true);
-      xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          var response = JSON.parse(xhr.responseText);
-
-          this.setState({
-            ...this.state,
-            picturesURL: [...this.state.picturesURL, response.secure_url]
-          })
-        }
-      }
-
+      let formData = new FormData();
       formData.append("upload_preset", process.env.REACT_APP_UNSIGNED_UPLOAD_PRESET)
       formData.append("file", file)
 
-      xhr.send(formData);
+      fetch(process.env.REACT_APP_API_ENDPOINT_URL, 
+        {
+          method: 'POST',
+          body: formData
+        }).then((response) => response.json()).then((response) => {
+          this.setState({
+                  ...this.state,
+                  picturesURL: [...this.state.picturesURL, response.secure_url]
+                })
+        })
     }
 
-    
   }
 
   handleDeletePic = (url) => {
