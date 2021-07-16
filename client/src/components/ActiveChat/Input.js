@@ -81,17 +81,12 @@ class Input extends Component {
 
   handleUploadPic = (e) => {
 
-    // Is there a better place to store those values ?
-    const CLOUD_NAME = 'dlqq70r7u';
-    const API_ENDPOINT_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`;
-    const UNSIGNED_UPLOAD_PRESET = 'f70isleq';
-
     for (const file of e.target.files) {
 
       const xhr = new XMLHttpRequest();
       var formData = new FormData();
 
-      xhr.open('POST', API_ENDPOINT_URL, true);
+      xhr.open('POST', process.env.REACT_APP_API_ENDPOINT_URL, true);
       xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
       xhr.onreadystatechange = () => {
@@ -105,7 +100,7 @@ class Input extends Component {
         }
       }
 
-      formData.append("upload_preset", UNSIGNED_UPLOAD_PRESET)
+      formData.append("upload_preset", process.env.REACT_APP_UNSIGNED_UPLOAD_PRESET)
       formData.append("file", file)
 
       xhr.send(formData);
