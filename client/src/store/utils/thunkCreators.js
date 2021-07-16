@@ -94,7 +94,6 @@ const sendMessage = (data, body) => {
 // message format to send: {recipientId, text, conversationId}
 // conversationId will be set to null if its a brand new conversation
 export const postMessage = (body) => (dispatch) => {
-  console.log('POST MESSAGE BODY: ', body)
   try {
     saveMessage(body).then((response) => {
       const data = response;

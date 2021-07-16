@@ -67,7 +67,6 @@ class Input extends Component {
   };
 
   handleSubmit = async (event) => {
-    console.log('TEXT IN OBJECT: ', event.target.text.value);
     event.preventDefault();
     // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
     if (!((event.target.text.value === '' || /^\s+$/.test(event.target.text.value)) && this.state.picturesURL.length === 0)) {
