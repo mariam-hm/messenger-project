@@ -28,8 +28,6 @@ class Home extends Component {
         isLoggedIn: true,
       });
     }
-    // Is it the smartest way to code this ??
-    this.props.fetchConversations();
   }
 
   componentDidMount() {
