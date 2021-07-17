@@ -103,7 +103,7 @@ const sendMessage = (data, body) => {
 export const postMessage = (body) => async (dispatch) => {
   try {
     const data = await saveMessage(body);
-
+    
     if (!body.conversationId) {
       dispatch(addConversation(body.recipientId, data.message));
     } else {
@@ -111,6 +111,7 @@ export const postMessage = (body) => async (dispatch) => {
     }
 
     sendMessage(data, body);
+    })
   } catch (error) {
     console.error(error);
   }
