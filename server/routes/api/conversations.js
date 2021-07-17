@@ -20,6 +20,9 @@ router.get("/", async (req, res, next) => {
         },
       },
       attributes: ["id"],
+      // I reversed the order of messages in the front-end, however, 
+      // I think it would be more efficient to do it here on the server side
+      // by replacing DESC by ASC
       order: [[Message, "createdAt", "DESC"]],
       include: [
         { model: Message, order: ["createdAt", "DESC"] },
