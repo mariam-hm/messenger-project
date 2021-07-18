@@ -41,10 +41,8 @@ const useStyles = makeStyles(() => ({
 const SenderBubble = (props) => {
   const classes = useStyles();
   const { time, text } = props;
-  // TEST PICTURES FOR SENDING PICTURES FEATURE
   const picturesURLs = []
-  //const picturesURLs = ['https://res.cloudinary.com/dlqq70r7u/image/upload/v1626357846/ghenjhklxq3y4pwdnqdj.jpg', 'https://res.cloudinary.com/dlqq70r7u/image/upload/v1626357712/ekjfxathixihysdcsvx0.jpg']
-
+  
   const pictures = picturesURLs.length ? (
     picturesURLs.map((picURL) => {
       return (

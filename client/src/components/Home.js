@@ -14,6 +14,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
+
 const Home = (props) => {
 
   const classes = useStyles();
@@ -34,6 +35,7 @@ const Home = (props) => {
     });
   }, [props.user.id])
 
+  
   const handleLogout = async () => {
     await props.logout(props.user.id);
   };

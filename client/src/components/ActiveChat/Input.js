@@ -22,15 +22,15 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'row',
     justifyContent: 'row',
     alignItems: 'center',
-    backgroundColor: "#F4F6FA",
+    backgroundColor: theme.palette.secondary.light,
     borderRadius: 8,
     marginTop: 20,
     marginBottom: 20,
     padding: 5
   },
   textField: {
-    color: "#91A3C0",
-    margin: '5px'
+    color: theme.palette.secondary.dark,
+    margin: theme.spacing(1)
   },
   invisible: {
     display: 'none'
@@ -79,34 +79,27 @@ const Input = (props) => {
     }
   };
 
+  
   const handleUploadPic = (e) => {
-
+    
     for (const file of e.target.files) {
 
-      const xhr = new XMLHttpRequest();
-      var formData = new FormData();
-
-      xhr.open('POST', process.env.REACT_APP_API_ENDPOINT_URL, true);
-      xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          var response = JSON.parse(xhr.responseText);
-
-          setState({
-            ...state,
-            picturesURL: [...state.picturesURL, response.secure_url]
-          })
-        }
-      }
-
+      let formData = new FormData();
       formData.append("upload_preset", process.env.REACT_APP_UNSIGNED_UPLOAD_PRESET)
       formData.append("file", file)
 
-      xhr.send(formData);
+      fetch(process.env.REACT_APP_API_ENDPOINT_URL, 
+        {
+          method: 'POST',
+          body: formData
+        }).then((response) => response.json()).then((response) => {
+          this.setState({
+                  ...this.state,
+                  picturesURL: [...this.state.picturesURL, response.secure_url]
+                })
+        })
     }
 
-    
   }
 
   const handleDeletePic = (url) => {
