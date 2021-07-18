@@ -1,4 +1,3 @@
-import React, { Component } from "react";
 import { 
   Box,
   FormControl, 
@@ -7,12 +6,13 @@ import {
   IconButton
 } from "@material-ui/core";
 import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
-import { withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
+import { useState } from "react";
 import { connect } from "react-redux";
 import { postMessage } from "../../store/utils/thunkCreators";
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 
-const styles = (theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     justifySelf: "flex-end",
     marginTop: 15,
@@ -41,45 +41,47 @@ const styles = (theme) => ({
     justifyContent: 'row',
     alignItems: 'center'
   }
-});
+}));
 
-class Input extends Component {
+const Input = (props) => {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      text: "",
-      picturesURL: []
-    };
-  }
+  const classes = useStyles()
 
-  handleChange = (event) => {
-    this.setState({
-      text: event.target.value,
+  const [buttonRef, setButtonRef] = useState(null);
+  const [state, setState] = useState({
+    text: "",
+    picturesURL: []
+  });
+
+  const handleChange = (event) => {
+    setState({
+      ...state,
+      text: event.target.value
     });
   };
 
-  handleSubmit = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
-    if (event.target.text.value !== '' && !(/^\s+$/.test(event.target.text.value))) {
+    if (!((event.target.text.value === '' || /^\s+$/.test(event.target.text.value)) && state.picturesURL.length === 0)) {
       const reqBody = {
-        ...this.state,
+        ...state,
         text: event.target.text.value,
-        recipientId: this.props.otherUser.id,
-        conversationId: this.props.conversationId,
-        sender: this.props.conversationId ? null : this.props.user,
+        recipientId: props.otherUser.id,
+        conversationId: props.conversationId,
+        sender: props.conversationId ? null : this.props.user,
       };
-      await this.props.postMessage(reqBody);
-      this.setState({
+      await props.postMessage(reqBody);
+      setState({
         text: "",
         picturesURL: []
       });
     }
   };
 
-  handleUploadPic = (e) => {
-
+  
+  const handleUploadPic = (e) => {
+    
     for (const file of e.target.files) {
 
       let formData = new FormData();
@@ -100,72 +102,80 @@ class Input extends Component {
 
   }
 
-  handleDeletePic = (url) => {
-    let newPicturesURL = this.state.picturesURL.filter((imageURL) => {
+  const handleDeletePic = (url) => {
+    let newPicturesURL = state.picturesURL.filter((imageURL) => {
       return imageURL !== url
     })
-    this.setState({
-      ...this.state,
+    setState({
+      ...state,
       picturesURL: newPicturesURL
     })
   }
 
-
-  render() {
-    const { classes } = this.props;
-
-    const imagesPreview = (imagesURLs) => {
-      return (
-        imagesURLs.length ? (
-          imagesURLs.map(url => {
-              return <Card key={url} style={{height: '80px', width: '80px', margin: '2px', background: `url(${url})`, backgroundSize: 'cover'}} >
-                      <IconButton onClick={() => this.handleDeletePic(url)} size="small" color="primary">
-                        <CancelRoundedIcon fontSize="small" />
-                      </IconButton>
-                    </Card>
-            })
-          ) : (null)
-      )
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      buttonRef.click();
     }
-
-    return (
-      <form className={classes.root} onSubmit={this.handleSubmit}>
-
-        <Box container item className={classes.input} >
-          <Box flexGrow={1}>
-
-            <Box className={classes.boxPreviewPictures} >
-              {imagesPreview(this.state.picturesURL)}
-            </Box>
-
-            <FormControl fullWidth hiddenLabel>
-              <TextField
-                border={0}
-                placeholder="Type something..."
-                value={this.state.text}
-                name="text"
-                onChange={this.handleChange}
-                InputProps={{
-                  disableUnderline: true,
-                  className: classes.textField
-                }}
-              />
-            </FormControl>
-          </Box>
-
-          <Box>
-            <input multiple accept="image/*" className={classes.invisible} id="icon-button-file" type="file" onChange={this.handleUploadPic}/>
-              <label htmlFor="icon-button-file">
-                <IconButton color="primary" aria-label="upload picture" component="span">
-                  <PhotoCamera />
-                </IconButton>
-              </label>
-          </Box>
-
-        </Box>
-      </form>
-    );
   }
+
+
+  const imagesPreview = (imagesURLs) => {
+    return (
+      imagesURLs.length ? (
+        imagesURLs.map(url => {
+            return <Card key={url} style={{height: '80px', width: '80px', margin: '2px', background: `url(${url})`, backgroundSize: 'cover'}} >
+                    <IconButton onClick={() => handleDeletePic(url)} size="small" color="primary">
+                      <CancelRoundedIcon fontSize="small" />
+                    </IconButton>
+                  </Card>
+          })
+        ) : (null)
+    )
+  }
+
+  return (
+    <form className={classes.root} onSubmit={handleSubmit}  >
+
+      <Box container item className={classes.input} >
+        <Box flexGrow={1}>
+
+          <Box className={classes.boxPreviewPictures} >
+            {imagesPreview(state.picturesURL)}
+          </Box>
+
+          <FormControl fullWidth hiddenLabel>
+            <TextField
+              border={0}
+              placeholder="Type something..."
+              value={state.text}
+              name="text"
+              multiline
+              onChange={handleChange}
+              onKeyPress={handleKeyPress}
+              
+              InputProps={{
+                disableUnderline: true,
+                className: classes.textField
+              }}
+            />
+          </FormControl>
+        </Box>
+
+        <Box>
+          <input multiple accept="image/*" className={classes.invisible} id="icon-button-file" type="file" onChange={handleUploadPic}/>
+            <label htmlFor="icon-button-file">
+              <IconButton color="primary" aria-label="upload picture" component="span">
+                <PhotoCamera />
+              </IconButton>
+            </label>
+        </Box>
+
+        <button type="submit" ref={setButtonRef} className={classes.invisible} ></button>
+
+      </Box>
+    </form>
+  );
 }
 
 const mapStateToProps = (state) => {
@@ -186,4 +196,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles, { withTheme: true })(Input));
+)(Input);
